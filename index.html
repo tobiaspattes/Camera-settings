@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foto Instellingen Advies</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        select, button {
+            display: block;
+            margin: 10px 0 20px 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 16px;
+        }
+        .output {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Foto Instellingen Advies</h1>
+
+    <label for="situation">1. Kies een situatie:</label>
+    <select id="situation">
+        <option value="">-- Kies --</option>
+        <option value="portret">Portret</option>
+        <option value="landschap">Landschap</option>
+        <option value="sport">Sport / Actie</option>
+        <option value="binnen">Binnen</option>
+        <option value="nacht">Nacht</option>
+        <option value="macro">Macro</option>
+        <option value="concert">Concert</option>
+    </select>
+
+    <label for="blur">2. Hoeveel achtergrondonscherpte wil je?</label>
+    <select id="blur">
+        <option value="">-- Kies --</option>
+        <option value="veel">Veel (wazige achtergrond)</option>
+        <option value="gemiddeld">Gemiddeld</option>
+        <option value="weinig">Weinig (alles scherp)</option>
+    </select>
+
+    <label for="movement">3. Is er beweging in beeld?</label>
+    <select id="movement">
+        <option value="">-- Kies --</option>
+        <option value="geen">Geen beweging</option>
+        <option value="weinig">Lichte beweging</option>
+        <option value="veel">Veel beweging / snel onderwerp</option>
+    </select>
+
+    <label for="licht">4. Hoe is het licht?</label>
+    <select id="licht">
+        <option value="">-- Kies --</option>
+        <option value="fel">Fel daglicht</option>
+        <option value="normaal">Normaal / binnen</option>
+        <option value="donker">Donker / avond / nacht</option>
+    </select>
+
+    <button id="generateAdvice">Toon Advies</button>
+
+    <div class="output" id="output">
+        Vul de velden in en klik op de knop voor instellingenadvies.
+    </div>
+</div>
+
+<script>
+document.getElementById("generateAdvice").addEventListener("click", genereerInstellingen);
+
+function genereerInstellingen() {
+    const situatie = document.getElementById("situation").value;
+    const blur = document.getElementById("blur").value;
+    const beweging = document.getElementById("movement").value;
+    const licht = document.getElementById("licht").value;
+
+    // Voeg logberichten toe voor debugging
+    console.log("Situatie:", situatie);
+    console.log("Blur:", blur);
+    console.log("Beweging:", beweging);
+    console.log("Licht:", licht);
+
+    if (!situatie || !blur || !beweging || !licht) {
+        document.getElementById("output").innerHTML = "Vul alle velden in voor een goed advies.";
+        return;
+    }
+
+    let iso = 100;
+    let sluitertijd = "1/125s";
+    let diafragma = "f/5.6";
+
+    // Licht beïnvloedt ISO
+    if (licht === "fel") iso = 100;
+    else if (licht === "normaal") iso = 800;
+    else if (licht === "donker") iso = 3200;
+
+    // Beweging beïnvloedt sluitertijd
+    if (beweging === "geen") sluitertijd = "1/60s";
+    else if (beweging === "weinig") sluitertijd = "1/250s";
+    else if (beweging === "veel") sluitertijd = "1/1000s";
+
+    // Blur beïnvloedt diafragma
+    if (blur === "veel") diafragma = "f/2.8";
+    else if (blur === "gemiddeld") diafragma = "f/5.6";
+    else if (blur === "weinig") diafragma = "f/11";
+
+    // Aanpassing op basis van specifieke situaties (optioneel)
+    if (situatie === "nacht") {
+        iso = 100;
+        sluitertijd = "10s";
+        diafragma = "f/8";
+    }
+
+    // Log de berekende instellingen
+    console.log("ISO:", iso);
+    console.log("Sluitertijd:", sluitertijd);
+    console.log("Diafragma:", diafragma);
+
+    document.getElementById("output").innerHTML = `
+        <h3>Aanbevolen instellingen</h3>
+        <strong>ISO:</strong> ${iso}<br>
+        <strong>Sluitertijd:</strong> ${sluitertijd}<br>
+        <strong>Diafragma:</strong> ${diafragma}<br><br>
+        <em>Gebaseerd op jouw keuzes: ${situatie}, licht: ${licht}, beweging: ${beweging}, blur: ${blur}</em>
+    `;
+}
+</script>
+
+</body>
+</html>

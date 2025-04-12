@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -37,6 +38,25 @@
             padding: 20px;
             margin-top: 30px;
         }
+        .warning {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Styling voor checkbox */
+        #photo_condition_section {
+            display: none;
+        }
+
+        /* Styling voor de knoppen naast elkaar */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .button-container button, .button-container select {
+            width: 48%;
+        }
     </style>
 </head>
 <body>
@@ -44,18 +64,41 @@
 <div class="container">
     <h1>Foto Instellingen Advies</h1>
 
+    <!-- Vinkvakje toegevoegd om vraag 5 aan of uit te zetten, nu bovenaan -->
+    <label>
+        <input type="checkbox" id="photo_condition_check">
+        Belichting van de foto is niet goed.
+    </label>
+
+    <!-- Vraag 5 met dropdown, deze is standaard verborgen -->
+    <div id="photo_condition_section">
+        <select id="photo_condition">
+            <option value="">-- Kies --</option>
+            <option value="te_licht">De foto is te licht</option>
+            <option value="te_donker">De foto is te donker</option>
+        </select>
+    </div>
+
+    <!-- Vraag 1: Kies een situatie -->
     <label for="situation">1. Kies een situatie:</label>
     <select id="situation">
         <option value="">-- Kies --</option>
         <option value="portret">Portret</option>
+        <option value="portret_individual">Portret (Enkel persoon)</option>
+        <option value="portret_group">Portret (Groep mensen)</option>
         <option value="landschap">Landschap</option>
+        <option value="landschap_closeup">Landschap (Close-up)</option>
+        <option value="landschap_wijds">Landschap (Wijds)</option>
         <option value="sport">Sport / Actie</option>
         <option value="binnen">Binnen</option>
-        <option value="nacht">Nacht</option>
         <option value="macro">Macro</option>
         <option value="concert">Concert</option>
+        <option value="architectuur">Architectuur</option>
+        <option value="dieren">Dieren</option>
+        <option value="feest">Feest</option>
     </select>
 
+    <!-- Vraag 2: Hoeveel achtergrondonscherpte wil je? -->
     <label for="blur">2. Hoeveel achtergrondonscherpte wil je?</label>
     <select id="blur">
         <option value="">-- Kies --</option>
@@ -64,6 +107,7 @@
         <option value="weinig">Weinig (alles scherp)</option>
     </select>
 
+    <!-- Vraag 3: Is er beweging in beeld? -->
     <label for="movement">3. Is er beweging in beeld?</label>
     <select id="movement">
         <option value="">-- Kies --</option>
@@ -72,6 +116,7 @@
         <option value="veel">Veel beweging / snel onderwerp</option>
     </select>
 
+    <!-- Vraag 4: Hoe is het licht? -->
     <label for="licht">4. Hoe is het licht?</label>
     <select id="licht">
         <option value="">-- Kies --</option>
@@ -80,7 +125,36 @@
         <option value="donker">Donker / avond / nacht</option>
     </select>
 
-    <button id="generateAdvice">Toon Advies</button>
+    <!-- Vraag 6: Wat voor camera gebruik je? -->
+    <label for="camera">5. Wat voor camera gebruik je?</label>
+    <select id="camera">
+        <option value="">-- Kies --</option>
+        <option value="fujifilm">Fujifilm</option>
+        <option value="nikon">Nikon</option>
+        <option value="canon">Canon</option>
+        <option value="sony">Sony</option>
+        <option value="panasonic">Panasonic</option>
+        <option value="olympus">Olympus</option>
+        <option value="leica">Leica</option>
+        <option value="pentax">Pentax</option>
+    </select>
+
+    <!-- Vraag 7: Welke lensafstand gebruik je? -->
+    <label for="lens">6. Welke lensafstand gebruik je?</label>
+    <select id="lens">
+        <option value="">-- Kies --</option>
+        <option value="18-50">18-50 mm</option>
+        <option value="50-100">50-100 mm</option>
+        <option value="100-200">100-200 mm</option>
+        <option value="200-400">200-400 mm</option>
+        <option value="18-200">18-200 mm</option>
+    </select>
+
+    <!-- Knoppen voor advies tonen en voor het invullen van de instellingen -->
+    <div class="button-container">
+        <button id="generateAdvice">Toon Advies</button>
+        <button id="resetForm">Reset</button>
+    </div>
 
     <div class="output" id="output">
         Vul de velden in en klik op de knop voor instellingenadvies.
@@ -89,20 +163,35 @@
 
 <script>
 document.getElementById("generateAdvice").addEventListener("click", genereerInstellingen);
+document.getElementById("resetForm").addEventListener("click", resetForm);
+document.getElementById("photo_condition_check").addEventListener("change", togglePhotoCondition);
 
+// Functie om de dropdown voor belichting te tonen of te verbergen
+function togglePhotoCondition() {
+    const checkBox = document.getElementById("photo_condition_check");
+    const photoConditionSection = document.getElementById("photo_condition_section");
+    const photoCondition = document.getElementById("photo_condition");
+
+    if (checkBox.checked) {
+        photoConditionSection.style.display = 'block';
+        photoCondition.value = ""; // Reset de dropdown naar de standaard optie
+    } else {
+        photoConditionSection.style.display = 'none';
+        photoCondition.value = ""; // Reset de dropdown naar de standaard optie als de checkbox wordt uitgezet
+    }
+}
+
+// Functie om de instellingen te genereren
 function genereerInstellingen() {
     const situatie = document.getElementById("situation").value;
+    const fotoCondition = document.getElementById("photo_condition").value;
     const blur = document.getElementById("blur").value;
     const beweging = document.getElementById("movement").value;
     const licht = document.getElementById("licht").value;
+    const camera = document.getElementById("camera").value;
+    const lens = document.getElementById("lens").value;
 
-    // Voeg logberichten toe voor debugging
-    console.log("Situatie:", situatie);
-    console.log("Blur:", blur);
-    console.log("Beweging:", beweging);
-    console.log("Licht:", licht);
-
-    if (!situatie || !blur || !beweging || !licht) {
+    if (!situatie || !blur || !beweging || !licht || !camera || !lens) {
         document.getElementById("output").innerHTML = "Vul alle velden in voor een goed advies.";
         return;
     }
@@ -110,41 +199,88 @@ function genereerInstellingen() {
     let iso = 100;
     let sluitertijd = "1/125s";
     let diafragma = "f/5.6";
+    let advies = "";
 
-    // Licht beïnvloedt ISO
-    if (licht === "fel") iso = 100;
-    else if (licht === "normaal") iso = 800;
-    else if (licht === "donker") iso = 3200;
-
-    // Beweging beïnvloedt sluitertijd
-    if (beweging === "geen") sluitertijd = "1/60s";
-    else if (beweging === "weinig") sluitertijd = "1/250s";
-    else if (beweging === "veel") sluitertijd = "1/1000s";
-
-    // Blur beïnvloedt diafragma
-    if (blur === "veel") diafragma = "f/2.8";
-    else if (blur === "gemiddeld") diafragma = "f/5.6";
-    else if (blur === "weinig") diafragma = "f/11";
-
-    // Aanpassing op basis van specifieke situaties (optioneel)
-    if (situatie === "nacht") {
-        iso = 100;
-        sluitertijd = "10s";
-        diafragma = "f/8";
+    // Specifieke instellingen voor camera's
+    if (camera === "fujifilm") {
+        iso = 200;
+        diafragma = "f/2.8";
+    } else if (camera === "nikon") {
+        iso = 400;
+        diafragma = "f/4";
+    } else if (camera === "canon") {
+        iso = 400;
+        diafragma = "f/3.5";
+    } else if (camera === "sony") {
+        iso = 800;
+        diafragma = "f/5.6";
     }
 
-    // Log de berekende instellingen
-    console.log("ISO:", iso);
-    console.log("Sluitertijd:", sluitertijd);
-    console.log("Diafragma:", diafragma);
+    // Specifieke instellingen voor lensafstand
+    if (lens === "18-50") {
+        diafragma = "f/3.5";
+    } else if (lens === "50-100") {
+        diafragma = "f/4";
+    } else if (lens === "100-200") {
+        diafragma = "f/5.6";
+    }
 
+    // Specifieke instellingen voor situaties
+    if (situatie === "portret_individual") {
+        iso = 200;
+        diafragma = "f/1.8";
+    } else if (situatie === "landschap_closeup") {
+        iso = 100;
+        diafragma = "f/16";
+    } else if (situatie === "sport") {
+        iso = 800;
+        sluitertijd = "1/1000s";
+    }
+
+    // Aanpassingen op basis van foto belichting
+    if (fotoCondition === "te_licht") {
+        advies = `
+            <p class="warning">Je foto is te licht! Dit kun je doen:</p>
+            <ul>
+                <li>Verlaag de ISO waarde (bijvoorbeeld naar 100).</li>
+                <li>Verhoog de sluitertijd (bijvoorbeeld naar 1/250s).</li>
+                <li>Verhoog het diafragma (bijvoorbeeld naar f/11).</li>
+            </ul>
+        `;
+    } else if (fotoCondition === "te_donker") {
+        advies = `
+            <p class="warning">Je foto is te donker! Dit kun je doen:</p>
+            <ul>
+                <li>Verhoog de ISO waarde (bijvoorbeeld naar 1600 of 3200).</li>
+                <li>Verlaag de sluitertijd (bijvoorbeeld naar 1/60s).</li>
+                <li>Verlaag het diafragma (bijvoorbeeld naar f/2.8).</li>
+            </ul>
+        `;
+    }
+
+    // Toon het advies
     document.getElementById("output").innerHTML = `
-        <h3>Aanbevolen instellingen</h3>
-        <strong>ISO:</strong> ${iso}<br>
-        <strong>Sluitertijd:</strong> ${sluitertijd}<br>
-        <strong>Diafragma:</strong> ${diafragma}<br><br>
-        <em>Gebaseerd op jouw keuzes: ${situatie}, licht: ${licht}, beweging: ${beweging}, blur: ${blur}</em>
+        <p>Instellingen advies:</p>
+        <ul>
+            <li>ISO: ${iso}</li>
+            <li>Sluitertijd: ${sluitertijd}</li>
+            <li>Diafragma: ${diafragma}</li>
+        </ul>
+        ${advies}
     `;
+}
+
+// Functie om het formulier te resetten
+function resetForm() {
+    document.getElementById("situation").value = "";
+    document.getElementById("blur").value = "";
+    document.getElementById("movement").value = "";
+    document.getElementById("licht").value = "";
+    document.getElementById("camera").value = "";
+    document.getElementById("lens").value = "";
+    document.getElementById("photo_condition_check").checked = false;
+    document.getElementById("photo_condition_section").style.display = "none";
+    document.getElementById("output").innerHTML = "Vul de velden in en klik op de knop voor instellingenadvies.";
 }
 </script>
 
